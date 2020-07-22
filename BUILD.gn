@@ -1,0 +1,215 @@
+config("common") {
+  cflags_c = [
+    "-Wno-sign-compare",
+    "-Wno-missing-field-initializers",
+  ]
+  cflags_cc = [
+    "-Wno-string-conversion",
+    "-Wno-unused-result",
+    "-Wno-format-security",
+    "-Wno-microsoft-enum-forward-reference",
+    "-Wno-header-hygiene",
+  ]
+  libs = [
+    "d3d11.lib",
+    "dxgi.lib",
+    "d3dcompiler.lib",
+    "dxguid.lib",
+    "d3d12.lib",
+    "Kernel32.lib",
+    "user32.lib",
+    "Ninput.lib",
+    "Shcore.lib",
+  ]
+  include_dirs = ["src/include"]
+}
+
+executable("d3d11_compute") {
+  configs += [":common"]
+  sources = [
+    "src/compute/d3d11_compute.cpp",
+  ]
+}
+
+executable("d3d12_compute") {
+  configs += [":common"]
+  sources = [
+    "src/compute/d3d12_compute.cpp",
+    "src/compute/d3d12_compute.h",
+  ]
+  configs += ["//build/config/compiler:exceptions"]
+  cflags_cc = [
+    "-Wno-address-of-temporary",
+  ]
+}
+
+executable("vp_overlay") {
+  configs += [":common"]
+  sources = [
+    "src/vp_overlay/vp_overlay.h",
+    "src/vp_overlay/vp_overlay.cpp",
+  ]
+}
+
+executable("aquarium") {
+  configs += [":common"]
+  cflags_cc =[
+    "-Wno-implicit-fallthrough",
+  ]
+  defines = [ "ENABLE_D3D12_BACKEND" ]
+  sources = [
+    "src/aquarium/Aquarium.cpp",
+    "src/aquarium/Aquarium.h",
+    "src/aquarium/Behavior.cpp",
+    "src/aquarium/Behavior.h",
+    "src/aquarium/Buffer.h",
+    "src/aquarium/BufferManager.cpp",
+    "src/aquarium/BufferManager.h",
+    "src/aquarium/Context.cpp",
+    "src/aquarium/Context.h",
+    "src/aquarium/ContextFactory.cpp",
+    "src/aquarium/ContextFactory.h",
+    "src/aquarium/FishModel.cpp",
+    "src/aquarium/FishModel.h",
+    "src/aquarium/Main.cpp",
+    "src/aquarium/Matrix.h",
+    "src/aquarium/Model.cpp",
+    "src/aquarium/Model.h",
+    "src/aquarium/Program.cpp",
+    "src/aquarium/Program.h",
+    "src/aquarium/ResourceHelper.cpp",
+    "src/aquarium/ResourceHelper.h",
+    "src/aquarium/SeaweedModel.h",
+    "src/aquarium/Texture.cpp",
+    "src/aquarium/Texture.h",
+    "src/aquarium/AQUARIUM_ASSERT.h",
+    "src/aquarium/FPSTimer.cpp",
+    "src/aquarium/FPSTimer.h",
+    "src/aquarium/d3d12/BufferD3D12.cpp",
+    "src/aquarium/d3d12/BufferD3D12.h",
+    "src/aquarium/d3d12/ContextD3D12.cpp",
+    "src/aquarium/d3d12/ContextD3D12.h",
+    "src/aquarium/d3d12/FishModelD3D12.cpp",
+    "src/aquarium/d3d12/FishModelD3D12.h",
+    "src/aquarium/d3d12/FishModelInstancedDrawD3D12.cpp",
+    "src/aquarium/d3d12/FishModelInstancedDrawD3D12.h",
+    "src/aquarium/d3d12/GenericModelD3D12.cpp",
+    "src/aquarium/d3d12/GenericModelD3D12.h",
+    "src/aquarium/d3d12/InnerModelD3D12.cpp",
+    "src/aquarium/d3d12/InnerModelD3D12.h",
+    "src/aquarium/d3d12/OutsideModelD3D12.cpp",
+    "src/aquarium/d3d12/OutsideModelD3D12.h",
+    "src/aquarium/d3d12/ProgramD3D12.cpp",
+    "src/aquarium/d3d12/ProgramD3D12.h",
+    "src/aquarium/d3d12/SeaweedModelD3D12.cpp",
+    "src/aquarium/d3d12/SeaweedModelD3D12.h",
+    "src/aquarium/d3d12/TextureD3D12.cpp",
+    "src/aquarium/d3d12/TextureD3D12.h",
+    "src/aquarium/d3d12/imgui_impl_dx12.cpp",
+    "src/aquarium/d3d12/imgui_impl_dx12.h",
+  ]
+
+  deps = [
+    "third_party:glfw",
+    "third_party:imgui",
+    "third_party:stb",
+    #"third_party:glad",
+  ]
+
+  include_dirs = [
+    "third_party/glfw/include",
+    "third_party/imgui",
+    "third_party/imgui/examples",
+    "third_party/rapidjson/include",
+    "third_party/stb",
+    #"third_party/glad/include",
+  ]
+}
+
+executable("nbody") {
+  configs += [":common"]
+  configs += ["//build/config/compiler:exceptions"]
+  if (is_win) {
+    configs -= [ "//build/config/win:console" ]
+    configs += [ "//build/config/win:windowed" ]
+  }
+
+  cflags_cc =[
+    "-Wno-address-of-temporary",
+    "-Wno-sign-compare",
+    "-Wno-reorder-ctor",
+  ]
+  sources = [
+    "src/nbody/Main.cpp",
+    "src/nbody/Win32Application.h",
+    "src/nbody/Win32Application.cpp",
+    "src/nbody/DXSample.cpp",
+    "src/nbody/DXSample.h",
+    "src/nbody/DXSampleHelper.h",
+    "src/nbody/D3D12nBodyGravity.cpp",
+    "src/nbody/D3D12nBodyGravity.h",
+    "src/nbody/StepTimer.h",
+    "src/nbody/SimpleCamera.cpp",
+    "src/nbody/SimpleCamera.h",
+    "src/nbody/d3dx12.h",
+  ]
+}
+
+executable("asteroid") {
+  configs += [":common"]
+  configs += ["//build/config/compiler:exceptions"]
+  cflags_cc =[
+    "-Wno-switch",
+    "-Wno-address-of-temporary",
+    "-Wno-reorder-ctor",
+  ]
+
+  sources = [
+    "src/asteroid/asteroids_d3d12.cpp",
+    "src/asteroid/asteroids_d3d12.h",
+    "src/asteroid/camera.cpp",
+    "src/asteroid/camera.h",
+    "src/asteroid/common_defines.h",
+    "src/asteroid/dds.h",
+    "src/asteroid/DDSTextureLoader.cpp",
+    "src/asteroid/DDSTextureLoader.h",
+    "src/asteroid/descriptor.h",
+    "src/asteroid/dxil_asteriod_ps_hlsl.h",
+    "src/asteroid/dxil_asteriod_vs_hlsl.h",
+    "src/asteroid/dxil_font_ps_hlsl.h",
+    "src/asteroid/dxil_skybox_ps_hlsl.h",
+    "src/asteroid/dxil_skybox_vs_hlsl.h",
+    "src/asteroid/dxil_sprite_ps_hlsl.h",
+    "src/asteroid/dxil_sprite_vs_hlsl.h",
+    "src/asteroid/font.h",
+    "src/asteroid/gui.h",
+    "src/asteroid/mesh.cpp",
+    "src/asteroid/mesh.h",
+    "src/asteroid/noise.h",
+    "src/asteroid/ScreenGrab12.cpp",
+    "src/asteroid/ScreenGrab12.h",
+    "src/asteroid/settings.h",
+    "src/asteroid/simplexnoise1234.c",
+    "src/asteroid/simplexnoise1234.h",
+    "src/asteroid/simulation.cpp",
+    "src/asteroid/simulation.h",
+    "src/asteroid/sprite.h",
+    "src/asteroid/subset_d3d12.h",
+    "src/asteroid/texture.cpp",
+    "src/asteroid/texture.h",
+    "src/asteroid/upload_heap.h",
+    "src/asteroid/util.h",
+    "src/asteroid/WinWrapper.cpp",
+  ]
+}
+
+group("all") {
+  deps = [
+    ":d3d11_compute",
+    ":d3d12_compute",
+    ":vp_overlay",
+    ":aquarium",
+    ":nbody",
+    ":asteroid"
+  ]
+}
